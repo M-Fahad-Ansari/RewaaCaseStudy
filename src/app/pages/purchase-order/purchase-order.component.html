@@ -1,1 +1,28 @@
-<p>purchase-order works!</p>
+<form [formGroup]="purchaseOrderForm">
+  <app-order-details
+    [purchaseOrderForm]="purchaseOrderForm"
+    [notesMaxLength]="notesMaxLength"
+    [errors]="errors"
+  ></app-order-details>
+  <app-products></app-products>
+</form>
+
+<button mat-button [disabled]="!purchaseOrderForm || !purchaseOrderForm.dirty">
+  Cancel
+</button>
+<button
+  mat-raised-button
+  [disabled]="!purchaseOrderForm || !purchaseOrderForm.dirty"
+>
+  Save as a draft
+</button>
+<button
+  mat-raised-button
+  color="primary"
+  (click)="completeOrder()"
+  [disabled]="
+    !purchaseOrderForm || !(purchaseOrderForm.valid && purchaseOrderForm.dirty)
+  "
+>
+  Complete Order
+</button>

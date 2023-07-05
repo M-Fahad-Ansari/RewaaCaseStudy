@@ -1,1 +1,42 @@
-<p>order-details works!</p>
+<form
+  class="order-form"
+  *ngIf="orderDetailsForm"
+  [formGroup]="orderDetailsForm"
+>
+  <mat-form-field class="field-half-width">
+    <mat-label>Supplier Name</mat-label>
+    <input matInput formControlName="supplierName" required />
+    <mat-error>{{ errors["supplierName"] }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="field-half-width">
+    <mat-label>Location</mat-label>
+    <input matInput formControlName="location" required />
+    <mat-error>{{ errors["location"] }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="field-half-width">
+    <mat-label>Supplier Invoice Number</mat-label>
+
+    <input
+      matInput
+      formControlName="invoiceNumber"
+      (keypress)="numberOnly($event)"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="field-half-width">
+    <mat-label>Notes</mat-label>
+    <textarea
+      matInput
+      formControlName="notes"
+      cdkTextareaAutosize
+      #autosize="cdkTextareaAutosize"
+      cdkAutosizeMinRows="1"
+      [maxlength]="notesMaxLength"
+      cdkAutosizeMaxRows="5"
+    ></textarea>
+    <mat-error>{{ errors["notes"] }}</mat-error>
+  </mat-form-field>
+  {{ orderDetailsForm.get("notes")?.value.length }} / {{ notesMaxLength }}
+</form>
