@@ -1,1 +1,73 @@
-<p>payment works!</p>
+<form *ngIf="paymentForm" [formGroup]="paymentForm">
+  <mat-radio-group class="radio-group" formControlName="period">
+    <mat-radio-button
+      *ngFor="let period of paymentPeriods"
+      class="radio-button"
+      [value]="period.value"
+      >{{ period.viewValue }}</mat-radio-button
+    >
+  </mat-radio-group>
+
+  <div class="container">
+    <div class="form-control-group">
+      <h3 class="heading">Payment Method</h3>
+      <div class="form-control-wrapper">
+        <mat-form-field>
+          <mat-label>Select an method</mat-label>
+          <mat-select formControlName="method">
+            <mat-option
+              *ngFor="let method of paymentMethods"
+              value="{{ method.value }}"
+              >{{ method.viewValue }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-control-group">
+      <h3 class="heading">Paid Amount</h3>
+      <div class="form-control-wrapper">
+        <mat-form-field appearance="outline">
+          <input
+            matInput
+            placeholder="0.00"
+            (keypress)="numberOnly($event)"
+            (input)="formatAmount()"
+            formControlName="paidAmount"
+            class="right-align"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-control-group">
+      <h3 class="heading">Credit Amount</h3>
+      <div class="form-control-wrapper">
+        <div class="amount-wrapper">
+          <span>{{ totalAmount }}.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-control-group">
+      <h3 class="heading">Payment Due Date</h3>
+      <div class="form-control-wrapper">
+        <mat-form-field appearance="outline" >
+          <input
+            matInput
+            formControlName="dueDate"
+            [matDatepicker]="picker"
+            placeholder="Select Date"
+            class="right-align"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</form>

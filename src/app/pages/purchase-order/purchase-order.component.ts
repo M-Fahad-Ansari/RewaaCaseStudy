@@ -7,6 +7,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import {
+  PAYMENT_METHOD,
+  PAYMENT_PERIOD,
+} from './products/payment/payment.model';
 @Component({
   selector: 'app-purchase-order',
   templateUrl: './purchase-order.component.html',
@@ -28,8 +32,23 @@ export class PurchaseOrderComponent implements OnInit {
         invoiceNumber: [''],
         notes: ['', [Validators.maxLength(this.notesMaxLength)]],
       }),
+      product: this.formBuilder.array([]),
+      payment: this.formBuilder.group({
+        period: [PAYMENT_PERIOD.NOW],
+        method: ['', [Validators.required]],
+        paidAmount: [null, [Validators.required, this.currencyValidator]],
+        dueDate: [new Date(), [Validators.required]],
+      }),
     });
     this.listenValueChanges();
+  }
+
+  currencyValidator(control: FormControl) {
+    const value = control.value;
+    if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
+      return { currency: true };
+    }
+    return null;
   }
 
   ngOnDestroy(): void {
@@ -47,21 +66,17 @@ export class PurchaseOrderComponent implements OnInit {
   private listenValueChanges(): void {
     for (const key in this.purchaseOrderForm.controls) {
       const control = this.purchaseOrderForm.get(key) as FormControl;
-      control.valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((res) => {
-        console.log(res);
-        console.log(control.invalid);
-        console.log(control.dirty);
-        
-        if (control.invalid && (control.dirty || control.touched)) {
-          for (const errorKey in control.errors) {
-            console.log("here");
-            
-            this.errors[key] = '';
-            const message = this.getErrorMessagesByType(errorKey, key);
-            this.errors[key] = message;
+      control.valueChanges
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((res) => {
+          if (control.invalid && (control.dirty || control.touched)) {
+            for (const errorKey in control.errors) {
+              this.errors[key] = '';
+              const message = this.getErrorMessagesByType(errorKey, key);
+              this.errors[key] = message;
+            }
           }
-        }
-      });
+        });
     }
   }
 

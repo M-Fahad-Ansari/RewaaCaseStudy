@@ -1,5 +1,26 @@
-.mat-divider-vertical{
-    height: 100%;
-    width: 0px !important;
-    position: inherit !important;
-  }
+.container {
+  display: flex;
+}
+
+.left-container {
+  flex: 25;
+  background-color: #e6e6e6;
+  padding: 20px;
+  border-right: 1px solid #ccc; /* Divider line */
+}
+
+.right-container {
+  flex: 75;
+  background-color: #e6e6e6;
+  padding: 20px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.button-group button {
+  margin-left: 10px;
+}

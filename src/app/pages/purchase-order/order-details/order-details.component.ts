@@ -16,8 +16,6 @@ export class OrderDetailsComponent implements OnInit {
     this.orderDetailsForm = this.purchaseOrderForm.get(
       'orderDetails'
     ) as FormGroup;
-    console.log(this.errors);
-    
   }
 
   numberOnly(event: KeyboardEvent): boolean {

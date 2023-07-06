@@ -1,0 +1,38 @@
+.radio-group {
+  display: flex;
+  flex-direction: row;
+}
+
+.radio-button {
+  margin-right: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-control-group {
+  display: flex;
+  align-items: center;
+}
+
+.heading {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.form-control-wrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.right-align input {
+  text-align: right;
+}
+.amount-wrapper {
+    color: maroon;
+    font-weight: bold;
+}
