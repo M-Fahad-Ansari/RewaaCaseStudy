@@ -14,12 +14,14 @@
   <button
     mat-button
     [disabled]="!purchaseOrderForm || !purchaseOrderForm.dirty"
+    (click)="cancelOrder()"
   >
     Cancel
   </button>
   <button
     mat-raised-button
     [disabled]="!purchaseOrderForm || !purchaseOrderForm.dirty"
+    (click)="saveAsDraft()"
   >
     Save as a draft
   </button>

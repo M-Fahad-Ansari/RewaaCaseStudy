@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -7,23 +7,54 @@ import {
   Validators,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import {
-  PAYMENT_METHOD,
-  PAYMENT_PERIOD,
-} from './products/payment/payment.model';
+import { PAYMENT_PERIOD } from './products/payment/payment.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-purchase-order',
   templateUrl: './purchase-order.component.html',
   styleUrls: ['./purchase-order.component.scss'],
 })
-export class PurchaseOrderComponent implements OnInit {
+export class PurchaseOrderComponent implements OnInit, OnDestroy {
   purchaseOrderForm: FormGroup = new FormGroup({});
   notesMaxLength = 200;
+  snackBarDuration = 3000;
   errors: { [key: string]: string } = {};
+
   private unsubscribe$ = new Subject<void>();
-  constructor(private formBuilder: FormBuilder) {}
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
+    this.createForm();
+    this.listenToFormValueChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  completeOrder(): void {
+    if (this.purchaseOrderForm.valid) {
+      console.log(this.purchaseOrderForm.value);
+      this.snackBar.open('Congratulations! Order completed correctly.', '', {
+        duration: this.snackBarDuration,
+      });
+    }
+  }
+
+  saveAsDraft(): void {
+    console.log('Order Drafted' + this.purchaseOrderForm.value);
+  }
+
+  cancelOrder(): void {
+    this.purchaseOrderForm.reset();
+  }
+
+  private createForm(): void {
     this.purchaseOrderForm = this.formBuilder.group({
       id: [1],
       orderDetails: this.formBuilder.group({
@@ -40,10 +71,11 @@ export class PurchaseOrderComponent implements OnInit {
         dueDate: [new Date(), [Validators.required]],
       }),
     });
-    this.listenValueChanges();
   }
 
-  currencyValidator(control: FormControl) {
+  private currencyValidator(
+    control: FormControl
+  ): { currency: boolean } | null {
     const value = control.value;
     if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
       return { currency: true };
@@ -51,47 +83,46 @@ export class PurchaseOrderComponent implements OnInit {
     return null;
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-    this.errors = {};
+  listenToFormValueChanges(): void {
+    this.purchaseOrderForm.valueChanges.subscribe(() => {
+      this.updateErrors(this.purchaseOrderForm);
+    });
   }
 
-  completeOrder(): void {
-    if (this.purchaseOrderForm.valid) {
-      console.log(this.purchaseOrderForm.value);
+  updateErrors(control: AbstractControl, controlPath: string = ''): void {
+    if (control instanceof FormGroup) {
+      for (const nestedControlName in control.controls) {
+        const nestedControl = control.get(nestedControlName) as FormControl;
+        const nestedControlPath = controlPath
+          ? `${controlPath}.${nestedControlName}`
+          : nestedControlName;
+        this.updateErrors(nestedControl, nestedControlPath);
+      }
+    } else if (control instanceof FormControl) {
+      if (control.invalid && (control.dirty || control.touched)) {
+        for (const errorKey in control.errors) {
+          const message = this.getErrorMessagesByType(errorKey, controlPath);
+          this.errors[controlPath] = message;
+        }
+      }
     }
   }
 
-  private listenValueChanges(): void {
-    for (const key in this.purchaseOrderForm.controls) {
-      const control = this.purchaseOrderForm.get(key) as FormControl;
-      control.valueChanges
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((res) => {
-          if (control.invalid && (control.dirty || control.touched)) {
-            for (const errorKey in control.errors) {
-              this.errors[key] = '';
-              const message = this.getErrorMessagesByType(errorKey, key);
-              this.errors[key] = message;
-            }
-          }
-        });
-    }
-  }
-
-  private getErrorMessagesByType(type: string, controlName: string): string {
+  getErrorMessagesByType(type: string, controlName: string): string {
     let message = '';
+    const transformedControlName = controlName.includes('.')
+      ? controlName.split('.')[1].charAt(0).toUpperCase() +
+        controlName.split('.')[1].slice(1)
+      : controlName;
     switch (type) {
       case 'required':
-        message = controlName + 'is required';
+        message = `${transformedControlName} is required`;
         break;
       case 'maxlength':
-        message =
-          controlName +
-          'can have maximum of ' +
-          this.notesMaxLength +
-          ' characters';
+        message = `${transformedControlName} can have a maximum of ${this.notesMaxLength} characters`;
+        break;
+      case 'currency':
+        message = `${transformedControlName} have incorrect format`;
         break;
     }
     return message;

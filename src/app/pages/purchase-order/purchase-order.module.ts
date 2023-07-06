@@ -21,6 +21,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import { HttpClientModule } from '@angular/common/http';
 
@@ -52,6 +53,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatRadioModule,
     MatNativeDateModule,
     MatDatepickerModule,
+    MatSnackBarModule,
     MatSelectModule,
     MatAutocompleteModule,
   ],

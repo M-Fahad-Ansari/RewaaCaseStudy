@@ -7,13 +7,13 @@
   <mat-form-field class="field-half-width">
     <mat-label>Supplier Name</mat-label>
     <input matInput formControlName="supplierName" required />
-    <mat-error>{{ errors["supplierName"] }}</mat-error>
+    <mat-error>{{ errors["orderDetails.supplierName"] }}</mat-error>
   </mat-form-field>
 
   <mat-form-field class="field-half-width">
     <mat-label>Location</mat-label>
     <input matInput formControlName="location" required />
-    <mat-error>{{ errors["location"] }}</mat-error>
+    <mat-error>{{ errors["orderDetails.location"] }}</mat-error>
   </mat-form-field>
 
   <mat-form-field class="field-half-width">
@@ -24,6 +24,7 @@
       formControlName="invoiceNumber"
       (keypress)="numberOnly($event)"
     />
+    <mat-error>{{ errors["orderDetails.invoiceNumber"] }}</mat-error>
   </mat-form-field>
 
   <mat-form-field class="field-half-width">
@@ -37,7 +38,9 @@
       [maxlength]="notesMaxLength"
       cdkAutosizeMaxRows="5"
     ></textarea>
-    <mat-error>{{ errors["notes"] }}</mat-error>
+    <mat-error>{{ errors["orderDetails.notes"] }}</mat-error>
   </mat-form-field>
-  {{ orderDetailsForm.get("notes")?.value.length }} / {{ notesMaxLength }}
+  <div class="character-count">
+    {{ orderDetailsForm.get("notes")?.value?.length }} / {{ notesMaxLength }}
+  </div>
 </form>

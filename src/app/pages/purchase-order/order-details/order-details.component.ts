@@ -19,8 +19,8 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   numberOnly(event: KeyboardEvent): boolean {
-    const charCode = event.which ? event.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    const charCode  = event.key;
+    if (charCode > '31' && (charCode < '48' || charCode > '57')) {
       return false;
     }
     return true;

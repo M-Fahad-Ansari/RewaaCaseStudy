@@ -1,18 +1,49 @@
-<div class="mat-grid">
-  <mat-grid-list cols="4" rowHeight="fit" gutterSize="16px">
-    <mat-grid-tile *ngFor="let item of items">
-      <!-- <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Title {{ item.id }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-expansion-panel-content>
-            Content {{ item.id }}
-          </mat-expansion-panel-content>
-        </mat-expansion-panel> -->
-    </mat-grid-tile>
-  </mat-grid-list>
-</div>
+<!-- Product details -->
+<mat-accordion>
+  <mat-expansion-panel
+    (opened)="panelState['product'] = true"
+    (closed)="panelState['product'] = false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title> Self aware panel </mat-panel-title>
+      <mat-panel-description>
+        Currently I am {{ panelState["product"] ? "open" : "closed" }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>HI</p>
+  </mat-expansion-panel>
+</mat-accordion>
 
-<app-payment [purchaseOrderForm]="purchaseOrderForm"></app-payment>
+<br>
+
+<!-- Sub Total -->
+<mat-accordion>
+  <mat-expansion-panel
+    (opened)="panelState['subTotal'] = true"
+    (closed)="panelState['subTotal'] = false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title> Sub Total (Tax inclusive) </mat-panel-title>
+      <mat-panel-description>
+        {{ subTotal }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div class="panel-content">
+      <div class="header-content">
+        <div class="left-content">Total Tax</div>
+        <div class="right-content">+ {{ extraTax }}</div>
+      </div>
+    </div>
+
+    <div class="panel-content">
+      <div class="header-content">
+        <div class="left-content">Total (Tax Inclusive)</div>
+        <div class="right-content">{{ extraTax + subTotal }}</div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<!-- Payment area -->
+<app-payment [purchaseOrderForm]="purchaseOrderForm" [totalAmount]="extraTax + subTotal"></app-payment>
