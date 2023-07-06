@@ -5,30 +5,40 @@
   and the latest buying price are updated after completing the purchase order
 </h3>
 
-<mat-form-field>
+<mat-form-field style="width: 310px">
   <input
     type="text"
     matInput
     placeholder="Type variant name or SKU"
     [(ngModel)]="searchCriteria"
+    (ngModelChange)="filterProducts()"
+    [matAutocomplete]="auto"
   />
   <mat-autocomplete
     #auto="matAutocomplete"
-    (optionSelected)="onOptionSelected($event)"
+    (optionSelected)="onProductSelect($event)"
   >
-    <mat-option *ngFor="let product of products" [value]="product.id">
+    <mat-option *ngFor="let product of filteredProducts" [value]="product.id">
       {{ product.id }} {{ product.name }}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
 
-<!-- <div class="image-container">
+<div
+  class="image-container"
+  *ngIf="!purchaseOrderForm.get('product')?.value?.length"
+>
   <img
     src="data:image/png;base64,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"
     alt="Search"
     class="center-image"
   />
-  <p class="caption">Search for products that you would like to include in your purchase order</p>
-</div> -->
+  <p class="caption">
+    Search for products that you would like to include in your purchase order
+  </p>
+</div>
 
-<app-product-details [purchaseOrderForm]="purchaseOrderForm"></app-product-details>
+<app-product-details
+  *ngIf="purchaseOrderForm.get('product')?.value?.length"
+  [purchaseOrderForm]="purchaseOrderForm"
+></app-product-details>

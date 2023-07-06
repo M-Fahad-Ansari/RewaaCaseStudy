@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-product-details',
@@ -14,14 +14,12 @@ export class ProductDetailsComponent implements OnInit {
   };
   extraTax = 9000;
   subTotal = 60000;
-  items: any[] = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    // Add more items as needed
-  ];
-  constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if(this.purchaseOrderForm) this.purchaseOrderForm.get('product') as FormArray;
+  }
+  
+  GetControls(name: string): AbstractControl[] {
+    return (this.purchaseOrderForm.get(name) as FormArray).controls;
+  }
 }
