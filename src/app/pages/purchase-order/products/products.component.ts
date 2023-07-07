@@ -1,8 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProductService } from './products.service';
 import { take } from 'rxjs';
-import { Product } from './products.model';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ProductList, TAX_CODE } from './products.model';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-products',
@@ -12,8 +18,8 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 export class ProductsComponent implements OnInit {
   @Input() purchaseOrderForm: FormGroup = new FormGroup({});
 
-  products: Product[] = [];
-  filteredProducts: Product[] = [];
+  products: ProductList[] = [];
+  filteredProducts: ProductList[] = [];
 
   searchCriteria = '';
   constructor(
@@ -25,7 +31,7 @@ export class ProductsComponent implements OnInit {
     this.productService
       .getProducts()
       .pipe(take(1))
-      .subscribe((products: Product[]) => {
+      .subscribe((products: ProductList[]) => {
         this.products = products;
       });
   }
@@ -48,23 +54,32 @@ export class ProductsComponent implements OnInit {
   onProductSelect(event: any): void {
     this.searchCriteria = '';
     const productID = event.option.value;
-    
+
     let selectedProduct = this.products.find(
-      (product: Product) => product.id === productID
+      (product: ProductList) => product.id === productID
     );
     const productsArray = this.purchaseOrderForm.get('product') as FormArray;
     const productGroup = this.createProductForm(selectedProduct);
     productsArray.push(productGroup);
-    console.log(productsArray);
   }
 
-  private createProductForm(product: Product | undefined): FormGroup {
+  private createProductForm(product: ProductList | undefined): FormGroup {
     return this.formBuilder.group({
       id: [product?.id ?? null],
       name: [product?.name ?? ''],
-      quantity: [null],
-      cost: [null],
-      taxCode: [''],
+      quantity: [null, [Validators.required]],
+      cost: [null, [Validators.required, this.currencyValidator]],
+      taxCode: [TAX_CODE.TAX, [Validators.required]],
     });
+  }
+
+  private currencyValidator(
+    control: FormControl
+  ): { currency: boolean } | null {
+    const value = control.value;
+    if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
+      return { currency: true };
+    }
+    return null;
   }
 }

@@ -1,83 +1,138 @@
 <!-- Product details -->
-<mat-accordion [formGroup]="purchaseOrderForm">
-  <ng-container formArrayName="product">
-    <mat-expansion-panel
-      *ngFor="let productInstance of GetControls('product'); let i = index"
-      [formGroupName]="i"
-      (opened)="panelState['product'] = true"
-      (closed)="panelState['product'] = false"
-    >
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <span>{{ productInstance.get("name")?.value }}</span>
-           &nbsp;(<h5>{{ productInstance.get("id")?.value }}</h5>)
-        </mat-panel-title>
-        <mat-panel-description>
-            <div class="form-fields-container">
-                <div class="form-field">
-                  <h5>Heading 1</h5>
-                  <mat-form-field>
-                    <mat-label>Input Label 1</mat-label>
-                    <input matInput placeholder="Input Placeholder 1">
-                  </mat-form-field>
-                </div>
-                <div class="form-field">
-                  <h5>Heading 2</h5>
-                  <mat-form-field>
-                    <mat-label>Input Label 2</mat-label>
-                    <input matInput placeholder="Input Placeholder 2">
-                  </mat-form-field>
-                </div>
-                <div class="form-field">
-                  <h5>Heading 3</h5>
-                  <mat-form-field>
-                    <mat-label>Input Label 3</mat-label>
-                    <input matInput placeholder="Input Placeholder 3">
-                  </mat-form-field>
-                </div>
-              </div>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <p>HI</p>
-    </mat-expansion-panel>
-  </ng-container>
-</mat-accordion>
+<form [formGroup]="purchaseOrderForm">
+  <mat-accordion [formGroup]="purchaseOrderForm">
+    <ng-container formArrayName="product">
+      <mat-expansion-panel
+        *ngFor="let productInstance of GetControls('product'); let i = index"
+        [formGroupName]="i"
+        (opened)="panelState['product'] = true"
+        (closed)="panelState['product'] = false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <h4>Product Name / SKU:</h4>
+            &nbsp;
+            <h3>{{ productInstance.get("name")?.value }}</h3>
+            (
+            <h5>{{ productInstance.get("id")?.value }}</h5>
+            )
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="form-fields-container">
+          <div class="form-field">
+            <h5>New QTY</h5>
+            <div class="input-container">
+              <mat-form-field>
+                <input
+                  matInput
+                  formControlName="quantity"
+                  (keypress)="numberOnly($event)"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="form-field">
+            <h5>New Cost(Tax Exclusive)</h5>
+            <div class="input-container">
+              <mat-form-field>
+                <input
+                  matInput
+                  formControlName="cost"
+                  (keypress)="numberOnly($event)"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="form-field">
+            <h5>Tax Code</h5>
+            <div class="input-container">
+              <mat-form-field>
+                <mat-label>Select Option</mat-label>
+                <mat-select formControlName="taxCode">
+                  <mat-option
+                    *ngFor="let code of taxCodes"
+                    value="{{ code.value }}"
+                    >{{ code.viewValue }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="delete-icon" (click)="deleteProduct(i)">
+            <mat-icon>delete</mat-icon>
+          </div>
+        </div>
 
+        <div class="list-container">
+          <div class="list-item">
+            <h2 class="item-heading">Available Qty (Available in stock)</h2>
+            <p class="item-subheading">0</p>
+
+            <h2 class="item-heading">Expected Qty</h2>
+            <p class="item-subheading">
+              {{ productInstance.get("quantity")?.value }}
+            </p>
+
+            <h2 class="item-heading">Last Buy price</h2>
+            <p class="item-subheading">0</p>
+          </div>
+          <div class="list-item">
+            <h2 class="item-heading">Total Cost(Tax Exclusive)</h2>
+            <p class="item-subheading">
+              {{ calculateTotalCostTE(productInstance.value) }}
+            </p>
+
+            <h2 class="item-heading">Tax Amount</h2>
+            <p class="item-subheading">
+              {{ calculateTaxAmount(productInstance.value) }}
+            </p>
+            <h2 class="item-heading">Total Cost (Tax Inclusive)</h2>
+            <p class="item-subheading">
+              {{
+                calculateTaxAmount(productInstance.value) +
+                  calculateTotalCostTE(productInstance.value)
+              }}
+            </p>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </ng-container>
+  </mat-accordion>
+</form>
 <br />
 
 <!-- Sub Total -->
 <mat-accordion>
   <mat-expansion-panel
-    
     (opened)="panelState['subTotal'] = true"
     (closed)="panelState['subTotal'] = false"
   >
     <mat-expansion-panel-header>
       <mat-panel-title> Sub Total (Tax inclusive) </mat-panel-title>
       <mat-panel-description>
-        {{ subTotal }}
+        {{ subTotalAmount }}
       </mat-panel-description>
     </mat-expansion-panel-header>
 
     <div class="panel-content">
       <div class="header-content">
         <div class="left-content">Total Tax</div>
-        <div class="right-content">+ {{ extraTax }}</div>
+        <div class="right-content">+ {{ extraTaxAmount }}</div>
       </div>
     </div>
 
     <div class="panel-content">
       <div class="header-content">
         <div class="left-content">Total (Tax Inclusive)</div>
-        <div class="right-content">{{ extraTax + subTotal }}</div>
+        <div class="right-content">{{ extraTaxAmount + subTotalAmount }}</div>
       </div>
     </div>
   </mat-expansion-panel>
 </mat-accordion>
 
-<br>
+<br />
 <!-- Payment area -->
 <app-payment
   [purchaseOrderForm]="purchaseOrderForm"
-  [totalAmount]="extraTax + subTotal"
+  [totalAmount]="extraTaxAmount + subTotalAmount"
 ></app-payment>

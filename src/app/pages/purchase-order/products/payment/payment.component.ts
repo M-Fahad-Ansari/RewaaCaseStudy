@@ -6,15 +6,19 @@ import {
   PaymentMethodOption,
   PaymentPeriodOption,
 } from './payment.model';
-import { FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
+import { BaseCommonCodeComponent } from 'src/app/pages/utils/base-common-code-component';
 
 @Component({
   selector: 'app-payment',
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss'],
 })
-export class PaymentComponent implements OnInit {
+export class PaymentComponent
+  extends BaseCommonCodeComponent
+  implements OnInit
+{
   @Input() purchaseOrderForm: FormGroup = new FormGroup({});
   @Input() totalAmount: number | null = null;
   paymentPeriod = PAYMENT_PERIOD;
@@ -27,24 +31,21 @@ export class PaymentComponent implements OnInit {
       this.paymentForm = this.purchaseOrderForm.get('payment') as FormGroup;
   }
 
-  numberOnly(event: KeyboardEvent): boolean {
-    const charCode = event.key;
-    if (charCode > '31' && (charCode < '48' || charCode > '57')) {
-      return false;
-    }
-    return true;
-  }
-
   onPaymentPeriodChange(event: MatRadioChange): void {
+    const paymentGroup = this.purchaseOrderForm.get('payment') as FormGroup;
+
+    paymentGroup.get('method')?.setValue('');
+    paymentGroup.get('paidAmount')?.setValue(0);
+    
     if (event.value === PAYMENT_PERIOD.LATER) {
-      (this.purchaseOrderForm.get('payment') as FormGroup)
-        .get('method')
-        ?.setValidators([]);
+      paymentGroup.get('method')?.setValidators(null);
+      paymentGroup.get('paidAmount')?.setValidators(null);
     } else {
-      (this.purchaseOrderForm.get('payment') as FormGroup)
-        .get('method')
-        ?.setValidators([Validators.required]);
+      paymentGroup.get('method')?.setValidators([Validators.required]);
+      paymentGroup.get('paidAmount')?.setValidators([Validators.required]);
     }
+    paymentGroup.get('method')?.updateValueAndValidity();
+    paymentGroup.get('paidAmount')?.updateValueAndValidity();
   }
 
   formatAmount(): void {
@@ -54,5 +55,13 @@ export class PaymentComponent implements OnInit {
       const formattedAmount = amount.toFixed(2);
       paidAmountControl.setValue(formattedAmount);
     }
+  }
+
+  currencyValidator(control: FormControl): { currency: boolean } | null {
+    const value = control.value;
+    if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
+      return { currency: true };
+    }
+    return null;
   }
 }

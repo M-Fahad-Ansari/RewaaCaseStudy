@@ -1,6 +1,9 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Product } from './products.model';
+import { ProductList } from './products.model';
 import { ProductService } from './products.service';
 
 describe('ProductService', () => {
@@ -21,12 +24,12 @@ describe('ProductService', () => {
   });
 
   it('should retrieve products', () => {
-    const mockProducts: Product[] = [
+    const mockProducts: ProductList[] = [
       { id: 1, name: 'Product 1' },
       { id: 2, name: 'Product 2' },
     ];
 
-    productService.getProducts().subscribe((products:Product[]) => {
+    productService.getProducts().subscribe((products: ProductList[]) => {
       expect(products).toEqual(mockProducts);
     });
 

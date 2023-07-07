@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
+  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -9,12 +10,13 @@ import {
 import { Subject, takeUntil } from 'rxjs';
 import { PAYMENT_PERIOD } from './products/payment/payment.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BaseCommonCodeComponent } from '../utils/base-common-code-component';
 @Component({
   selector: 'app-purchase-order',
   templateUrl: './purchase-order.component.html',
   styleUrls: ['./purchase-order.component.scss'],
 })
-export class PurchaseOrderComponent implements OnInit, OnDestroy {
+export class PurchaseOrderComponent extends BaseCommonCodeComponent implements OnInit, OnDestroy {
   purchaseOrderForm: FormGroup = new FormGroup({});
   notesMaxLength = 200;
   snackBarDuration = 3000;
@@ -25,7 +27,9 @@ export class PurchaseOrderComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -67,10 +71,27 @@ export class PurchaseOrderComponent implements OnInit, OnDestroy {
       payment: this.formBuilder.group({
         period: [PAYMENT_PERIOD.NOW],
         method: ['', [Validators.required]],
-        paidAmount: [null, [Validators.required, this.currencyValidator]],
+        paidAmount: [0, [Validators.required, this.currencyValidator]],
         dueDate: [new Date(), [Validators.required]],
       }),
     });
+  }
+
+  findInvalidControlsRecursive(formToInvestigate:FormGroup|FormArray):string[] {
+    var invalidControls:string[] = [];
+    let recursiveFunc = (form:FormGroup|FormArray) => {
+      Object.keys(form.controls).forEach(field => { 
+        const control = form.get(field);
+        if (control?.invalid) invalidControls.push(field);
+        if (control instanceof FormGroup) {
+          recursiveFunc(control);
+        } else if (control instanceof FormArray) {
+          recursiveFunc(control);
+        }        
+      });
+    }
+    recursiveFunc(formToInvestigate);
+    return invalidControls;
   }
 
   private currencyValidator(
