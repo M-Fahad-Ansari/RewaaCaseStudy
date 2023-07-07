@@ -68,18 +68,8 @@ export class ProductsComponent implements OnInit {
       id: [product?.id ?? null],
       name: [product?.name ?? ''],
       quantity: [null, [Validators.required]],
-      cost: [null, [Validators.required, this.currencyValidator]],
+      cost: [null, [Validators.required]],
       taxCode: [TAX_CODE.TAX, [Validators.required]],
     });
-  }
-
-  private currencyValidator(
-    control: FormControl
-  ): { currency: boolean } | null {
-    const value = control.value;
-    if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
-      return { currency: true };
-    }
-    return null;
   }
 }

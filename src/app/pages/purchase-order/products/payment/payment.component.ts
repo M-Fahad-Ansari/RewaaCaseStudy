@@ -48,15 +48,6 @@ export class PaymentComponent
     paymentGroup.get('paidAmount')?.updateValueAndValidity();
   }
 
-  formatAmount(): void {
-    const paidAmountControl = this.paymentForm?.get('paidAmount');
-    if (paidAmountControl && paidAmountControl.value) {
-      const amount = parseFloat(paidAmountControl.value);
-      const formattedAmount = amount.toFixed(2);
-      paidAmountControl.setValue(formattedAmount);
-    }
-  }
-
   currencyValidator(control: FormControl): { currency: boolean } | null {
     const value = control.value;
     if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {

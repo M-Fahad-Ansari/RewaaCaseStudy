@@ -38,6 +38,8 @@
                 <input
                   matInput
                   formControlName="cost"
+                  matCurrencyInput
+                  (input)="formatAmount(productInstance.get('cost'))"
                   (keypress)="numberOnly($event)"
                 />
               </mat-form-field>

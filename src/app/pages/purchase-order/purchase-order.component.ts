@@ -71,46 +71,19 @@ export class PurchaseOrderComponent extends BaseCommonCodeComponent implements O
       payment: this.formBuilder.group({
         period: [PAYMENT_PERIOD.NOW],
         method: ['', [Validators.required]],
-        paidAmount: [0, [Validators.required, this.currencyValidator]],
+        paidAmount: [0, [Validators.required]],
         dueDate: [new Date(), [Validators.required]],
       }),
     });
   }
 
-  findInvalidControlsRecursive(formToInvestigate:FormGroup|FormArray):string[] {
-    var invalidControls:string[] = [];
-    let recursiveFunc = (form:FormGroup|FormArray) => {
-      Object.keys(form.controls).forEach(field => { 
-        const control = form.get(field);
-        if (control?.invalid) invalidControls.push(field);
-        if (control instanceof FormGroup) {
-          recursiveFunc(control);
-        } else if (control instanceof FormArray) {
-          recursiveFunc(control);
-        }        
-      });
-    }
-    recursiveFunc(formToInvestigate);
-    return invalidControls;
-  }
-
-  private currencyValidator(
-    control: FormControl
-  ): { currency: boolean } | null {
-    const value = control.value;
-    if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
-      return { currency: true };
-    }
-    return null;
-  }
-
-  listenToFormValueChanges(): void {
+  private listenToFormValueChanges(): void {
     this.purchaseOrderForm.valueChanges.subscribe(() => {
       this.updateErrors(this.purchaseOrderForm);
     });
   }
 
-  updateErrors(control: AbstractControl, controlPath: string = ''): void {
+  private updateErrors(control: AbstractControl, controlPath: string = ''): void {
     if (control instanceof FormGroup) {
       for (const nestedControlName in control.controls) {
         const nestedControl = control.get(nestedControlName) as FormControl;
@@ -129,7 +102,7 @@ export class PurchaseOrderComponent extends BaseCommonCodeComponent implements O
     }
   }
 
-  getErrorMessagesByType(type: string, controlName: string): string {
+  private getErrorMessagesByType(type: string, controlName: string): string {
     let message = '';
     const transformedControlName = controlName.includes('.')
       ? controlName.split('.')[1].charAt(0).toUpperCase() +
