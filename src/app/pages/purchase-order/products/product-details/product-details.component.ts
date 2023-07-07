@@ -6,7 +6,7 @@ import {
   TAX_CODE_OPTIONS,
   TaxCodeOption,
 } from '../products.model';
-import { BaseCommonCodeComponent } from 'src/app/pages/utils/base-common-code-component';
+import { BaseCommonCodeComponent } from 'src/app/shared/utils/base-common-code-component';
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',

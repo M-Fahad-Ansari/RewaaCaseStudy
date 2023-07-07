@@ -8,7 +8,7 @@ import {
 } from './payment.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
-import { BaseCommonCodeComponent } from 'src/app/pages/utils/base-common-code-component';
+import { BaseCommonCodeComponent } from 'src/app/shared/utils/base-common-code-component';
 
 @Component({
   selector: 'app-payment',
@@ -36,7 +36,7 @@ export class PaymentComponent
 
     paymentGroup.get('method')?.setValue('');
     paymentGroup.get('paidAmount')?.setValue(0);
-    
+
     if (event.value === PAYMENT_PERIOD.LATER) {
       paymentGroup.get('method')?.setValidators(null);
       paymentGroup.get('paidAmount')?.setValidators(null);

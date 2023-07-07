@@ -10,7 +10,7 @@ import {
 import { Subject, takeUntil } from 'rxjs';
 import { PAYMENT_PERIOD } from './products/payment/payment.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BaseCommonCodeComponent } from '../utils/base-common-code-component';
+import { BaseCommonCodeComponent } from 'src/app/shared/utils/base-common-code-component';
 @Component({
   selector: 'app-purchase-order',
   templateUrl: './purchase-order.component.html',
