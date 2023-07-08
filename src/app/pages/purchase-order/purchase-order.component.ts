@@ -56,6 +56,13 @@ export class PurchaseOrderComponent extends BaseCommonCodeComponent implements O
 
   cancelOrder(): void {
     this.purchaseOrderForm.reset();
+    this.clearFormArray(this.purchaseOrderForm.get('product') as FormArray);
+  }
+
+  private clearFormArray(formArray: FormArray) {
+    while (formArray.length !== 0) {
+      formArray.removeAt(0);
+    }
   }
 
   private createForm(): void {
@@ -78,7 +85,7 @@ export class PurchaseOrderComponent extends BaseCommonCodeComponent implements O
   }
 
   private listenToFormValueChanges(): void {
-    this.purchaseOrderForm.valueChanges.subscribe(() => {
+    this.purchaseOrderForm.valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
       this.updateErrors(this.purchaseOrderForm);
     });
   }

@@ -47,7 +47,6 @@ export class ProductsComponent implements OnInit {
   }
 
   onProductSelect(event: any): void {
-    this.searchCriteria = '';
     const productID = event.option.value;
 
     let selectedProduct = this.products.find(
@@ -56,14 +55,15 @@ export class ProductsComponent implements OnInit {
     const productsArray = this.purchaseOrderForm.get('product') as FormArray;
     const productGroup = this.createProductForm(selectedProduct);
     productsArray.push(productGroup);
+    this.purchaseOrderForm.markAsDirty();
   }
 
   private createProductForm(product: ProductList | undefined): FormGroup {
     return this.formBuilder.group({
       id: [product?.id ?? null],
       name: [product?.name ?? ''],
-      quantity: [null, [Validators.required]],
-      cost: [null, [Validators.required]],
+      quantity: [0, [Validators.required]],
+      cost: [0, [Validators.required]],
       taxCode: [TAX_CODE.TAX, [Validators.required]],
     });
   }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import {
   SelectedProduct,
@@ -7,29 +7,35 @@ import {
   TaxCodeOption,
 } from '../products.model';
 import { BaseCommonCodeComponent } from 'src/app/shared/utils/base-common-code-component';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.scss'],
 })
-export class ProductDetailsComponent extends BaseCommonCodeComponent {
+export class ProductDetailsComponent extends BaseCommonCodeComponent implements OnInit, OnDestroy {
   @Input() purchaseOrderForm: FormGroup = new FormGroup({});
   products: FormArray | undefined = undefined;
   panelState: { [key: string]: boolean } = {
     product: false,
     subTotal: false,
   };
-
+  private unsubscribe$ = new Subject<void>();
   taxCodes: TaxCodeOption[] = TAX_CODE_OPTIONS;
-  extraTaxAmount = 0;
+  totalTaxAmount = 0;
   subTotalAmount = 0;
 
   ngOnInit(): void {
-    (this.purchaseOrderForm.get('product') as FormArray).valueChanges.subscribe(
+    (this.purchaseOrderForm.get('product') as FormArray).valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe(
       (instance: SelectedProduct[]) => {
         this.calculateSubTotalAndTaxes(instance);
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   calculateTotalCostTE(productInstance: SelectedProduct): number {
@@ -63,13 +69,12 @@ export class ProductDetailsComponent extends BaseCommonCodeComponent {
     for (const product of productArray) {
       const totalCost = this.calculateTotalCostTE(product);
       const totalTax = this.calculateTaxAmount(product);
-      const itemTotal = totalCost + totalTax;
 
       subTotal += totalCost;
       taxes += totalTax;
     }
 
     this.subTotalAmount = subTotal;
-    this.extraTaxAmount = taxes;
+    this.totalTaxAmount = taxes;
   }
 }

@@ -12,6 +12,37 @@
   margin-right: 62%;
 }
 
+.main-container{
+  min-height: 0;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sub-container{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 26px;
+}
+
+.custom-panel-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.custom-panel-title .heading {
+  font-size: 14px;
+}
+
+.custom-panel-title .subheading {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
 .form-fields-container {
   display: flex;
   align-items: center;
@@ -33,7 +64,6 @@
   align-items: center;
   cursor: pointer;
 }
-
 
 .list-container {
   display: flex;

@@ -1,68 +1,71 @@
 <!-- Product details -->
 <form [formGroup]="purchaseOrderForm">
-  <mat-accordion [formGroup]="purchaseOrderForm">
+  <mat-accordion>
     <ng-container formArrayName="product">
-      <mat-expansion-panel
+      <mat-expansion-panel class="main-container"
         *ngFor="let productInstance of GetControls('product'); let i = index"
         [formGroupName]="i"
         (opened)="panelState['product'] = true"
         (closed)="panelState['product'] = false"
       >
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <h4>Product Name / SKU:</h4>
-            &nbsp;
-            <h3>{{ productInstance.get("name")?.value }}</h3>
-            (
-            <h5>{{ productInstance.get("id")?.value }}</h5>
-            )
+        <mat-expansion-panel-header class="sub-container">
+          <mat-panel-title class="custom-panel-title" (click)="$event.stopPropagation()">
+            <div class="heading">Product Name / SKU: </div>
+            <div class="subheading">{{ productInstance.get('name')?.value }} ({{ productInstance.get('id')?.value }})</div>
           </mat-panel-title>
+          <mat-panel-description (click)="$event.stopPropagation();">
+            <div class="form-fields-container">
+              <div class="form-field">
+                <div class="input-container">
+                  <mat-form-field>
+                    <mat-label>New QTY</mat-label>
+                    <input
+                      matInput
+                      formControlName="quantity"
+                      (keydown)="numberOnly($event)"
+                    />
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="form-field">
+                <div class="input-container">
+                  <mat-form-field>
+                    <mat-label>New Cost(Tax Exclusive)</mat-label>
+
+                    <input
+                      matInput
+                      formControlName="cost"
+                      matCurrencyInput
+                      (input)="formatAmount(productInstance.get('cost'))"
+                    />
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="form-field">
+                <div class="input-container">
+                  <mat-form-field>
+                    <mat-label>Tax Code</mat-label>
+                    <mat-select formControlName="taxCode">
+                      <mat-option value="" disabled>Select option</mat-option>
+                      <mat-option
+                        *ngFor="let code of taxCodes"
+                        value="{{ code.value }}"
+                        >{{ code.viewValue }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div
+                class="delete-icon"
+                title="Delete Product"
+                (click)="deleteProduct(i)"
+              >
+                <mat-icon>delete</mat-icon>
+              </div>
+            </div>
+          </mat-panel-description>
         </mat-expansion-panel-header>
-        <div class="form-fields-container">
-          <div class="form-field">
-            <h5>New QTY</h5>
-            <div class="input-container">
-              <mat-form-field>
-                <input
-                  matInput
-                  formControlName="quantity"
-                  (keydown)="numberOnly($event)"
-                />
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="form-field">
-            <h5>New Cost(Tax Exclusive)</h5>
-            <div class="input-container">
-              <mat-form-field>
-                <input
-                  matInput
-                  formControlName="cost"
-                  matCurrencyInput
-                  (input)="formatAmount(productInstance.get('cost'))"
-                />
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="form-field">
-            <h5>Tax Code</h5>
-            <div class="input-container">
-              <mat-form-field>
-                <mat-label>Select Option</mat-label>
-                <mat-select formControlName="taxCode">
-                  <mat-option
-                    *ngFor="let code of taxCodes"
-                    value="{{ code.value }}"
-                    >{{ code.viewValue }}</mat-option
-                  >
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="delete-icon" (click)="deleteProduct(i)">
-            <mat-icon>delete</mat-icon>
-          </div>
-        </div>
 
         <div class="list-container">
           <div class="list-item">
@@ -118,14 +121,14 @@
     <div class="panel-content">
       <div class="header-content">
         <div class="left-content">Total Tax</div>
-        <div class="right-content">+ {{ extraTaxAmount }}</div>
+        <div class="right-content">+ {{ totalTaxAmount }}</div>
       </div>
     </div>
 
     <div class="panel-content">
       <div class="header-content">
         <div class="left-content">Total (Tax Inclusive)</div>
-        <div class="right-content">{{ extraTaxAmount + subTotalAmount }}</div>
+        <div class="right-content">{{ totalTaxAmount + subTotalAmount }}</div>
       </div>
     </div>
   </mat-expansion-panel>
@@ -135,5 +138,5 @@
 <!-- Payment area -->
 <app-payment
   [purchaseOrderForm]="purchaseOrderForm"
-  [totalAmount]="extraTaxAmount + subTotalAmount"
+  [totalAmount]="totalTaxAmount + subTotalAmount"
 ></app-payment>

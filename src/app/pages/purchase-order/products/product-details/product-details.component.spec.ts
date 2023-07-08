@@ -44,7 +44,6 @@ describe('ProductDetailsComponent', () => {
   });
 
   it('should calculate the tax amount', () => {
-    const taxCode = 'TAX';
     const productInstance = {
       id: 1,
       name: 'iphone',
@@ -113,13 +112,13 @@ describe('ProductDetailsComponent', () => {
       }
 
       component.subTotalAmount = subTotal;
-      component.extraTaxAmount = taxes;
+      component.totalTaxAmount = taxes;
     }
 
     calculateSubTotalAndTaxes(productArray);
 
     expect(component.subTotalAmount).toBe(40);
-    expect(component.extraTaxAmount).toBe(6);
+    expect(component.totalTaxAmount).toBe(6);
   });
 
   // Add more test cases as needed for other methods and scenarios

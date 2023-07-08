@@ -11,3 +11,24 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 Run `ng test` to execute the unit tests via [Karma].
 
 ## Brief about project:
+Models:
+    - Purchase Order: id, order, product , payment.
+    - Order: supplierName, location ,invoiceNumber, notes.
+    - Product: quantity, cost, taxCode.
+    - Payment: period, method, paidAmount, dueDate.
+    - Product List: id, name.
+
+Autocomplete is for: 
+    - Items searched to add in cart.
+    - Supplier
+    - Location
+
+Formulas:
+    - Total cost (Tax inclusive): Quantity * Cost
+    - Tax Amount: 15 % of Total Cost
+    - Sub Total: Sum of all Total Cost
+    - Total Tax: Sum of all Tax amount
+
+UI Library used: Angular Material
+
+

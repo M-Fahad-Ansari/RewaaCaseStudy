@@ -9,14 +9,15 @@
   <input
     type="text"
     matInput
+    #searchInput
     placeholder="Type variant name or SKU"
-    [(ngModel)]="searchCriteria"
-    (ngModelChange)="filterProducts()"
+    [value]="searchCriteria"
+    (input)="filterProducts()"
     [matAutocomplete]="auto"
   />
   <mat-autocomplete
     #auto="matAutocomplete"
-    (optionSelected)="onProductSelect($event)"
+    (optionSelected)="onProductSelect($event); searchInput.value = ''"
   >
     <mat-option *ngFor="let product of filteredProducts" [value]="product.id">
       {{ product.id }} {{ product.name }}
