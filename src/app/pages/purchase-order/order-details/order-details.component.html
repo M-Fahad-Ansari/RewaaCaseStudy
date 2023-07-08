@@ -46,7 +46,7 @@
     <input
       matInput
       formControlName="invoiceNumber"
-      (keypress)="numberOnly($event)"
+      (keydown)="numberOnly($event)"
     />
     <mat-error>{{ errors["orderDetails.invoiceNumber"] }}</mat-error>
   </mat-form-field>

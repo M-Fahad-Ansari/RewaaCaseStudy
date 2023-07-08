@@ -26,7 +26,7 @@
                 <input
                   matInput
                   formControlName="quantity"
-                  (keypress)="numberOnly($event)"
+                  (keydown)="numberOnly($event)"
                 />
               </mat-form-field>
             </div>
@@ -40,7 +40,6 @@
                   formControlName="cost"
                   matCurrencyInput
                   (input)="formatAmount(productInstance.get('cost'))"
-                  (keypress)="numberOnly($event)"
                 />
               </mat-form-field>
             </div>

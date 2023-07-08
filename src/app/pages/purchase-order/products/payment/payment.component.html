@@ -32,7 +32,6 @@
           <input
             matInput
             placeholder="0.00"
-            (keypress)="numberOnly($event)"
             (input)="formatAmount(paymentForm.get('paidAmount'))"
             formControlName="paidAmount"
             class="right-align"
