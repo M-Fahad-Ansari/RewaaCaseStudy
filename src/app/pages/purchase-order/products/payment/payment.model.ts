@@ -1,3 +1,9 @@
+export interface Payment {
+  period: string;
+  method: string;
+  paidAmount: number;
+  dueDate: string;
+}
 export interface PaymentPeriodOption {
   viewValue: string;
   value: PAYMENT_PERIOD;

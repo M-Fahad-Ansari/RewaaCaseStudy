@@ -1,3 +1,5 @@
+import { Order } from './order-details/order-details.model';
+import { Payment } from './products/payment/payment.model';
 import { SelectedProduct } from './products/products.model';
 
 export interface PurchaseOrder {
@@ -5,18 +7,4 @@ export interface PurchaseOrder {
   orderDetails: Order;
   product: SelectedProduct[];
   payment: Payment;
-}
-
-export interface Order {
-  supplierName: string;
-  location: string;
-  invoiceNumber: string;
-  notes: string;
-}
-
-export interface Payment {
-  period: string;
-  method: string;
-  paidAmount: number;
-  dueDate: string;
 }

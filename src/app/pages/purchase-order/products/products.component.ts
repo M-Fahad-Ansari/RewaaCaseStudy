@@ -2,13 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ProductService } from './products.service';
 import { take } from 'rxjs';
 import { ProductList, TAX_CODE } from './products.model';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-products',
@@ -33,6 +27,7 @@ export class ProductsComponent implements OnInit {
       .pipe(take(1))
       .subscribe((products: ProductList[]) => {
         this.products = products;
+        this.filteredProducts = this.products;
       });
   }
 
@@ -42,7 +37,7 @@ export class ProductsComponent implements OnInit {
       this.filteredProducts = this.products; // Show all products when search criteria is empty
     } else {
       this.filteredProducts = this.products.filter(
-        (product) =>
+        (product: ProductList) =>
           product.id.toString().includes(this.searchCriteria.toString()) ||
           product.name
             .toLowerCase()

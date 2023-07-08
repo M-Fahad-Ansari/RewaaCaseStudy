@@ -6,14 +6,38 @@
 >
   <mat-form-field class="field-half-width">
     <mat-label>Supplier Name</mat-label>
-    <input matInput formControlName="supplierName" required />
+    <input
+      type="text"
+      matInput
+      formControlName="supplierName"
+      (input)="filterByItem(filterControls.SUPPLIER)"
+      [matAutocomplete]="supplierAuto"
+    />
     <mat-error>{{ errors["orderDetails.supplierName"] }}</mat-error>
+
+    <mat-autocomplete #supplierAuto="matAutocomplete">
+      <mat-option *ngFor="let supplier of filteredSuppliers" [value]="supplier">
+        {{ supplier }}
+      </mat-option>
+    </mat-autocomplete>
   </mat-form-field>
 
   <mat-form-field class="field-half-width">
     <mat-label>Location</mat-label>
-    <input matInput formControlName="location" required />
+    <input
+      type="text"
+      matInput
+      formControlName="location"
+      (input)="filterByItem(filterControls.LOCATION)"
+      [matAutocomplete]="locationAuto"
+    />
     <mat-error>{{ errors["orderDetails.location"] }}</mat-error>
+
+    <mat-autocomplete #locationAuto="matAutocomplete">
+      <mat-option *ngFor="let location of filteredLocations" [value]="location">
+        {{ location }}
+      </mat-option>
+    </mat-autocomplete>
   </mat-form-field>
 
   <mat-form-field class="field-half-width">
