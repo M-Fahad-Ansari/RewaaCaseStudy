@@ -7,12 +7,9 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
 
-declare const require: {
-  context(path: string, deep?: boolean, filter?: RegExp): {
-    <T>(id: string): T;
-    keys(): string[];
-  };
-};
+declare const __karma__:any;
+declare const require: any;
+__karma__.loaded =  function(){}
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
@@ -20,9 +17,7 @@ getTestBed().initTestEnvironment(
   platformBrowserDynamicTesting(),
 );
 
-const requireModule = require.context('./', false, /\.js$/);
-requireModule.keys().forEach(filename => {
-  // Dynamically require modules
-  const module = requireModule(filename);
-  // ...
-});
+const context = require.context('./', true, /\.spec\.ts$/);
+context.keys().forEach(context);
+
+__karma__.start();
