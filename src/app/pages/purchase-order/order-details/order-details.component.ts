@@ -29,6 +29,9 @@ export class OrderDetailsComponent
     this.orderDetailsForm = this.purchaseOrderForm.get(
       'orderDetails'
     ) as FormGroup;
+
+    this.filteredSuppliers = this.supplierNameOptions;
+    this.filteredLocations = this.locationOptions;
   }
 
   filterByItem(itemName: string): void {
