@@ -4,7 +4,7 @@ export interface ProductList {
 }
 export interface SelectedProduct extends ProductList {
   quantity: number;
-  taxCode: string;
+  taxCode: TAX_CODE;
   cost: number;
 }
 

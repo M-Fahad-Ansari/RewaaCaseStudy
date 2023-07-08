@@ -66,7 +66,7 @@ describe('PaymentComponent', () => {
     const paidAmountControl = new FormControl('50.1234');
     component.paymentForm?.addControl('paidAmount', paidAmountControl);
 
-    component.formatAmount();
+    component.formatAmount(paidAmountControl);
 
     expect(paidAmountControl.value).toBe('50.12');
   });
