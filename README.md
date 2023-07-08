@@ -30,5 +30,14 @@ Formulas:
     - Total Tax: Sum of all Tax amount
 
 UI Library used: Angular Material
+Angular verison used: 16.1.4
+
+Thought process:
+    - Create container -> purchase order
+    - inside it:
+        - Left container:
+            Order details.
+        - Right container:
+            combination of product list and payemnt.
 
 
