@@ -1,6 +1,6 @@
 # RewaaCaseStudy
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.2.
+This project is generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.4.
 
 ## Development server
 
@@ -30,7 +30,6 @@ Formulas:
     - Total Tax: Sum of all Tax amount
 
 UI Library used: Angular Material
-Angular verison used: 16.1.4
 
 Thought process:
     - Create container -> purchase order
